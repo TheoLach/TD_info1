@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 13 09:53:13 2024
+
+
+@author: theo
+"""
+
+tirage='ajhdbzuce'
+
+
+'''création de la liste de mot'''
+wordstxt=open('mots.sansaccent.txt','r') 
+words=wordstxt.readlines()
+   
+    
+    
+def possible_word(tirage,word):
+    '''fonction retournant un booléen indiquant si 
+    un mot peut etre écrit avec le tirage'''
+    copy_tirage=list(tirage)
+    L=list(word)   
+    for e in L:
+        if e in  copy_tirage:
+             copy_tirage.remove(e)
+        else:
+            return False
+    return True
+       
+def longest_word_possible(tirage):
+    possible_words=[]#liste des mots que l'on peut écrire
+    max=0
+    finalword=None
+    for word in words:
+        if (tirage,word)==True:
+            possible_words.append(word)          
+    for word in possible_words:
+        if len(word)>max:
+            finalword=word
+            max=len(word)
+    return(finalword)
+
+listeval=[('a',1),('b',3),('c',3),('d',2),('e',1),('f',4),('g',2),('h',4),
+          ('i',1),('j',8),('k',10),('l',1),('m',2),('n',1),('o',1),('p',3),('q',8),('r',1),
+          ('s',1),('t',1),('u',1),('v',4),('w',10),('x',10),('y',10),('z',10)]
+
+
+def value(letter):
+    k=0
+    while letter != listeval[k][0]:#trouve la position de ''lettre'' dans la liste des valeurs
+        k+=1
+    return(listeval[k][1])
+    
+def score_word(word):
+    score=0
+    for letter in word:#compte les points d'un mot
+        score+=value(letter)
+    return(score)
+
+def max_score(words_list):
+    final_score=0
+    final_word=''
+    for word in words_list :#trouve le mot avec le plus de point dans une liste
+        if score_word(word)>final_score:
+            final_score=score_word(word)
+            final_word=word
+    return(final_word,final_score)
+
+def max_point_and_word(tirage,path):
+    M=[]
+    for word in words:
+        if possible_word(tirage,word)==True:
+            M.append(word)
+    return(max_score(M))
+    
+    
+"modif avec un joker :"  
+def possible_word_joker(tirage,word):
+    '''fonction retournant un booléen indiquant si 
+    un mot peut etre écrit avec le tirage'''
+    copy_tirage=list(tirage)
+    list_word=list(word)
+    if '?' not in copy_tirage:
+        for letter in list_word:
+            if letter in copy_tirage:
+                copy_tirage.remove(letter)
+            else:
+                return False
+        return True
+    else:
+        c=0 # compteur qui indique le nombre de lettres manquantes
+        for letter in list_word:
+            if letter in copy_tirage or c==0:
+                    copy_tirage.remove(letter)
+            else:
+                  c=+1
+        if c >1: # si il y a plus d'une lettre 
+        #manquante on ne peut pas écrire le mot
+            return False
+        return True
+
+'''la fonction qui donne le plus long mot qui peut etre écrit ne change pas
+et celle qui donne le mot avec le plus de point change trés légérement
+il faut rajouter un caractere dans la liste des valeurs associées aux lettres, le ?'''
+    
+    
+    
